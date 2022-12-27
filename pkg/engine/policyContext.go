@@ -126,10 +126,6 @@ func (c *PolicyContext) FindExceptions(rule string) ([]*kyvernov2alpha1.PolicyEx
 	return result, nil
 }
 
-func (c *PolicyContext) Client() dclient.Interface {
-	return c.client
-}
-
 // Mutators
 
 func (c *PolicyContext) WithPolicy(policy kyvernov1.PolicyInterface) *PolicyContext {
