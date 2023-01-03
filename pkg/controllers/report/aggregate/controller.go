@@ -36,7 +36,6 @@ const (
 	ControllerName = "aggregate-report-controller"
 	maxRetries     = 10
 	mergeLimit     = 1000
-	enqueueDelay   = 30 * time.Second
 )
 
 type controller struct {
@@ -95,14 +94,15 @@ func NewController(
 		metadataCache:  metadataCache,
 		chunkSize:      chunkSize,
 	}
-	controllerutils.AddDelayedExplicitEventHandlers(logger, polrInformer.Informer(), c.queue, enqueueDelay, keyFunc)
-	controllerutils.AddDelayedExplicitEventHandlers(logger, cpolrInformer.Informer(), c.queue, enqueueDelay, keyFunc)
-	controllerutils.AddDelayedExplicitEventHandlers(logger, bgscanrInformer.Informer(), c.queue, enqueueDelay, keyFunc)
-	controllerutils.AddDelayedExplicitEventHandlers(logger, cbgscanrInformer.Informer(), c.queue, enqueueDelay, keyFunc)
+	delay := 15 * time.Second
+	controllerutils.AddDelayedExplicitEventHandlers(logger, polrInformer.Informer(), c.queue, delay, keyFunc)
+	controllerutils.AddDelayedExplicitEventHandlers(logger, cpolrInformer.Informer(), c.queue, delay, keyFunc)
+	controllerutils.AddDelayedExplicitEventHandlers(logger, bgscanrInformer.Informer(), c.queue, delay, keyFunc)
+	controllerutils.AddDelayedExplicitEventHandlers(logger, cbgscanrInformer.Informer(), c.queue, delay, keyFunc)
 	enqueueFromAdmr := func(obj metav1.Object) {
 		// no need to consider non aggregated reports
 		if controllerutils.HasLabel(obj, reportutils.LabelAggregatedReport) {
-			c.queue.AddAfter(keyFunc(obj), enqueueDelay)
+			c.queue.AddAfter(keyFunc(obj), delay)
 		}
 	}
 	controllerutils.AddEventHandlersT(

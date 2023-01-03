@@ -53,9 +53,10 @@ func TestConvertToUnstructured(t *testing.T) {
 			err:  fmt.Errorf("json: cannot unmarshal number into Go value of type map[string]interface {}"),
 		},
 	}
+
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			got, err := ObjToUnstructured(tc.obj)
+			got, err := ConvertToUnstructured(tc.obj)
 			if (err != nil) != (tc.err != nil) {
 				t.Errorf("expected error %v but got %v", tc.err, err)
 			}

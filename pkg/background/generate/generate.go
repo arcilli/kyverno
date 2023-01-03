@@ -24,6 +24,7 @@ import (
 	enginecontext "github.com/kyverno/kyverno/pkg/engine/context"
 	"github.com/kyverno/kyverno/pkg/engine/context/resolvers"
 	"github.com/kyverno/kyverno/pkg/engine/response"
+	"github.com/kyverno/kyverno/pkg/engine/utils"
 	"github.com/kyverno/kyverno/pkg/engine/variables"
 	"github.com/kyverno/kyverno/pkg/event"
 	"github.com/kyverno/kyverno/pkg/registryclient"
@@ -812,7 +813,7 @@ func GetUnstrRule(rule *kyvernov1.Generation) (*unstructured.Unstructured, error
 	if err != nil {
 		return nil, err
 	}
-	return kubeutils.BytesToUnstructured(ruleData)
+	return utils.ConvertToUnstructured(ruleData)
 }
 
 func (c *GenerateController) ApplyResource(resource *unstructured.Unstructured) error {
