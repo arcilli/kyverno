@@ -97,7 +97,7 @@ func validateJSONPatch(patch string, ruleIdx int) error {
 	for _, operation := range decodedPatch {
 		op := operation.Kind()
 		if op != "add" && op != "remove" && op != "replace" {
-			return fmt.Errorf("unexpected kind: spec.rules[%d]: %s", ruleIdx, op)
+			return fmt.Errorf("Unexpected kind: spec.rules[%d]: %s", ruleIdx, op)
 		}
 		v, _ := operation.ValueInterface()
 		if v != nil {
@@ -498,7 +498,7 @@ func hasInvalidVariables(policy kyvernov1.PolicyInterface, background bool) erro
 		}
 
 		ctx := buildContext(ruleCopy, background)
-		if _, err := variables.SubstituteAllInRule(logging.GlobalLogger(), ctx, *ruleCopy); !checkNotFoundErr(err) {
+		if _, err := variables.SubstituteAllInRule(logging.GlobalLogger(), ctx, *ruleCopy); !variables.CheckNotFoundErr(err) {
 			return fmt.Errorf("variable substitution failed for rule %s: %s", ruleCopy.Name, err.Error())
 		}
 	}
@@ -645,21 +645,6 @@ func addContextVariables(entries []kyvernov1.ContextEntry, ctx *enginecontext.Mo
 			ctx.AddVariable(contextEntry.Name + ".data.*")
 		}
 	}
-}
-
-func checkNotFoundErr(err error) bool {
-	if err != nil {
-		switch err.(type) {
-		case jmespath.NotFoundError:
-			return true
-		case enginecontext.InvalidVariableError:
-			return false
-		default:
-			return false
-		}
-	}
-
-	return true
 }
 
 func validateElementInForEach(document apiextensions.JSON) error {

@@ -170,7 +170,6 @@ func createReportControllers(
 	kyvernoInformer kyvernoinformer.SharedInformerFactory,
 	configMapResolver resolvers.ConfigmapResolver,
 	backgroundScanInterval time.Duration,
-	configuration config.Configuration,
 ) ([]internal.Controller, func(context.Context) error) {
 	var ctrls []internal.Controller
 	var warmups []func(context.Context) error
@@ -226,7 +225,6 @@ func createReportControllers(
 					resourceReportController,
 					configMapResolver,
 					backgroundScanInterval,
-					configuration,
 				),
 				backgroundScanWorkers,
 			))
@@ -342,7 +340,6 @@ func createrLeaderControllers(
 		kyvernoInformer,
 		configMapResolver,
 		backgroundScanInterval,
-		configuration,
 	)
 	return append(
 			[]internal.Controller{

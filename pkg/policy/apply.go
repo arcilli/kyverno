@@ -11,7 +11,6 @@ import (
 	"github.com/go-logr/logr"
 	kyvernov1 "github.com/kyverno/kyverno/api/kyverno/v1"
 	"github.com/kyverno/kyverno/pkg/clients/dclient"
-	"github.com/kyverno/kyverno/pkg/config"
 	"github.com/kyverno/kyverno/pkg/engine"
 	enginecontext "github.com/kyverno/kyverno/pkg/engine/context"
 	"github.com/kyverno/kyverno/pkg/engine/context/resolvers"
@@ -32,7 +31,6 @@ func applyPolicy(
 	rclient registryclient.Client,
 	informerCacheResolvers resolvers.ConfigmapResolver,
 	namespaceLabels map[string]string,
-	cfg config.Configuration,
 ) (responses []*response.EngineResponse) {
 	startTime := time.Now()
 	defer func() {
@@ -63,7 +61,7 @@ func applyPolicy(
 		logger.Error(err, "failed to add namespace to ctx")
 	}
 
-	if err := ctx.AddImageInfos(&resource, cfg); err != nil {
+	if err := ctx.AddImageInfos(&resource); err != nil {
 		logger.Error(err, "unable to add image info to variables context")
 	}
 
@@ -84,7 +82,7 @@ func applyPolicy(
 		WithExcludeGroupRole(excludeGroupRole...).
 		WithInformerCacheResolver(informerCacheResolvers)
 
-	engineResponseValidation = engine.Validate(context.TODO(), rclient, policyCtx, cfg)
+	engineResponseValidation = engine.Validate(context.TODO(), rclient, policyCtx)
 	engineResponses = append(engineResponses, mergeRuleRespose(engineResponseMutation, engineResponseValidation))
 
 	return engineResponses
